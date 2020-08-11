@@ -11,18 +11,14 @@
 
                 <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><router-link to="/">Home<span class="sr-only">(current)</span></router-link></li>
-                        <li><router-link :to="{ name: 'outlets.data' }">Outlets</router-link></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                        <li><router-link to="/">Home <span class="sr-only">(current)</span></router-link></li>
+                        <li v-if="$can('read outlets')"><router-link :to="{ name: 'outlets.data' }">Outlets</router-link></li>
+                        <li v-if="$can('read couriers')"><router-link :to="{ name: 'couriers.data' }">Couriers</router-link></li>
+                        <li v-if="$can('read products')"><router-link :to="{ name: 'products.data' }">Products</router-link></li>
+                        <li class="dropdown" v-if="authenticated.role == 0">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
+                                <li><router-link :to="{name: 'role.permissions'}">Role Permission</router-link></li>
                             </ul>
                         </li>
                     </ul>
@@ -111,16 +107,20 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="https://via.placeholder.com/160" class="user-image" alt="User Image">
-                                <span class="hidden-xs">Alexander Pierce</span>
+                                    
+                                    <!-- MODIFIKASI BAGIAN INI -->
+                                <span class="hidden-xs">{{ authenticated.name }}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="user-header">
                                     <img src="https://via.placeholder.com/160" class="img-circle" alt="User Image">
-                                    <p>Alexander Pierce - Web Developer <small>Member since Nov. 2012</small></p>
+                                    
+                                    <!-- MODIFIKASI BAGIAN INI -->
+                                    <p>{{ authenticated.name }}</p>
                                 </li>
                                 <li class="user-body">
                                     <div class="row">
-                                        <div class="col-xs-4 text-center">
+                                        <!-- <div class="col-xs-4 text-center">
                                             <a href="#">Followers</a>
                                         </div>
                                         <div class="col-xs-4 text-center">
@@ -128,7 +128,7 @@
                                         </div>
                                         <div class="col-xs-4 text-center">
                                             <a href="#">Friends</a>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </li>
                                 <li class="user-footer">
@@ -136,7 +136,12 @@
                                         <a href="#" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        
+                                        <!-- MODIFIKASI BAGIAN INI -->
+                                        <a href="javascript:void(0)" @click="logout" class="btn btn-default btn-flat">
+                                            Sign out
+                                            </a>
+                                        
                                     </div>
                                 </li>
                             </ul>
@@ -149,7 +154,24 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
     
+    computed: {
+        ...mapState('user', {
+            authenticated: state => state.authenticated
+        })
+    },
+    methods: {
+        logout() {
+            return new Promise((resolve, reject) => {
+                localStorage.removeItem('token')
+                resolve()
+            }).then(() => {
+                this.$store.state.token = localStorage.getItem('token')
+                this.$router.push('/login')
+            })
+        }
+    }
 }
 </script>

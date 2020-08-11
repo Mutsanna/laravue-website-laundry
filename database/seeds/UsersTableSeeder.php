@@ -16,7 +16,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Mutsanna Qoid A',
             'email' => 'am.qoid@mutsanna.xyz',
             'email_verified_at' => now(),
-            'password' => bcrypt('root'),
+            'password' => bcrypt('secret'),
             'role' => 0
         ]);
     }
