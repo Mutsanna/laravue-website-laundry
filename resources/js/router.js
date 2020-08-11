@@ -16,9 +16,14 @@ import IndexProduct from './pages/products/Index.vue'
 import DataProduct from './pages/products/Product.vue'
 import AddProduct from './pages/products/Add.vue'
 import EditProduct from './pages/products/Edit.vue'
-
 import Setting from './pages/setting/Index.vue'
 import SetPermission from './pages/setting/roles/SetPermission.vue'
+import IndexExpenses from './pages/expenses/Index.vue'
+import DataExpenses from './pages/expenses/Expenses.vue'
+import CreateExpenses from './pages/expenses/Add.vue'
+import ViewExpenses from './pages/expenses/View.vue'
+
+import EditExpenses from './pages/expenses/Edit.vue'
 
 Vue.use(Router)
 
@@ -124,7 +129,40 @@ const router = new Router({
                     meta: { title: 'Set Permissions' }
                 },
             ]
+        },
+        {
+            path: '/expenses',
+            component: IndexExpenses,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'expenses.data',
+                    component: DataExpenses,
+                    meta: { title: 'Manage Expenses' }
+                },
+                {
+                    path: 'add',
+                    name: 'expenses.create',
+                    component: CreateExpenses,
+                    meta: { title: 'Add New Expenses' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'expenses.view',
+                    component: ViewExpenses,
+                    meta: { title: 'View Expenses' }
+                },
+
+                {
+                    path: 'edit/:id',
+                    name: 'expenses.edit',
+                    component: EditExpenses,
+                    meta: { title: 'Edit Expenses' }
+                },
+            ]
         }
+
     ]
 });
 
